@@ -2,8 +2,8 @@
 
 
 ### Users
-- [ ] User shall be able to post issue
-- [ ] User shall be able to hide their username (post anonymously)
+- [ ] User shall be able to post issue - Jorge
+- [ ] User shall be able to hide their username (post anonymously) - Jorge
 - [ ] User shall be able to post comment
 - [ ] User shall be able to upvote an issue
 - [ ] User shall be able to downvote an issue
