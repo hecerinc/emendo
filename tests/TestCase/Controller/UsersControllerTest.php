@@ -1,13 +1,13 @@
 <?php
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\VotesController;
+use App\Controller\UsersController;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * App\Controller\VotesController Test Case
+ * App\Controller\UsersController Test Case
  */
-class VotesControllerTest extends IntegrationTestCase
+class UsersControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -16,11 +16,13 @@ class VotesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'app.votes',
         'app.users',
-        'app.issues',
         'app.comments',
-        'app.photos'
+        'app.issues',
+        'app.photos',
+        'app.votes',
+        'app.tags',
+        'app.issues_tags'
     ];
 
     /**

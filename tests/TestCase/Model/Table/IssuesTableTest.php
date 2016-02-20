@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\VotesTable;
+use App\Model\Table\IssuesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\VotesTable Test Case
+ * App\Model\Table\IssuesTable Test Case
  */
-class VotesTableTest extends TestCase
+class IssuesTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\VotesTable
+     * @var \App\Model\Table\IssuesTable
      */
-    public $Votes;
+    public $Issues;
 
     /**
      * Fixtures
@@ -24,11 +24,13 @@ class VotesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.votes',
-        'app.users',
         'app.issues',
+        'app.users',
         'app.comments',
-        'app.photos'
+        'app.photos',
+        'app.votes',
+        'app.tags',
+        'app.issues_tags'
     ];
 
     /**
@@ -39,8 +41,8 @@ class VotesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Votes') ? [] : ['className' => 'App\Model\Table\VotesTable'];
-        $this->Votes = TableRegistry::get('Votes', $config);
+        $config = TableRegistry::exists('Issues') ? [] : ['className' => 'App\Model\Table\IssuesTable'];
+        $this->Issues = TableRegistry::get('Issues', $config);
     }
 
     /**
@@ -50,7 +52,7 @@ class VotesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Votes);
+        unset($this->Issues);
 
         parent::tearDown();
     }

@@ -4,6 +4,7 @@ CREATE TABLE users(
 	email VARCHAR(255) UNIQUE,
 	token VARCHAR(255),
 	type int(2) UNSIGNED,
+	username VARCHAR(255) UNIQUE,
 	created DATETIME,
 	modified DATETIME
 );
