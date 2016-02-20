@@ -1,26 +1,40 @@
-# CakePHP Application Skeleton
+# Issue tracker
 
-[![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
-[![License](https://img.shields.io/packagist/l/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
 
-A skeleton for creating applications with [CakePHP](http://cakephp.org) 3.x.
+### Users
+- [ ] User shall be able to post issue
+- [ ] User shall be able to hide their username (post anonymously)
+- [ ] User shall be able to post comment
+- [ ] User shall be able to upvote an issue
+- [ ] User shall be able to downvote an issue
+- [ ] User shall be able to upvote a comment
+- [ ] User shall be able to downvote a comment
+- [ ] User shall be able comment on issue
+- [ ] User shall be able to filter comments by timestamp
+- [ ] User shall be able to filter comments by votes
+- [ ] User shall be able to tag issues
+- [ ] User shall be able to create new tags if non existant
+- [ ] User shall be able to CRUD their own comments
+- [ ] User shall be able to CRUD their own issues
+- [ ] User shall be able to see edit history for comments
+- [ ] User shall be able to see edit history for issues
+- [ ] User shall be able to add images to issues
+- [ ] User shall be able to add images to comments
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+### Admin
+- [ ] All users must be registered to access the site
+- [ ] Admin shall be able to delete issue
+- [ ] Admin shall be able to delete comment
+- [ ] Admin shall be able to block user
 
-## Installation
+### System
+- [ ] System shall alert of messages with specific (banned) keywords
+- [ ] System shall always provide a link to posting guidelines
+- [ ] System shall provide the list of issues filtered by tag
+- [ ] System shall provide suggestions for tags
 
-1. Download [Composer](http://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+## Future developments
 
-If Composer is installed globally, run
-```bash
-composer create-project --prefer-dist cakephp/app [app_name]
-```
-
-You should now be able to visit the path to where you installed the app and see
-the setup traffic lights.
-
-## Configuration
-
-Read and edit `config/app.php` and setup the 'Datasources' and any other
-configuration relevant for your application.
+- [ ] Meme bank to filter out memes (machine learning layer)
+- [ ] "Special" accounts for university authorities
+- [ ] Apply "Reddit" algorithm for comment sorting
