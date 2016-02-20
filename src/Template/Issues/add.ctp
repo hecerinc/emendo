@@ -21,7 +21,7 @@
         <?php
             echo $this->Form->input('title');
             echo $this->Form->input('body');
-            echo $this->Form->input('user_id', ['options' => $users]);
+            echo $this->Form->hidden('user_id', ['options' => $users, 'value' => $user_id]);
             echo $this->Form->input('tags._ids', ['options' => $tags]);
         ?>
     </fieldset>

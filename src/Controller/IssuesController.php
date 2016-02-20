@@ -52,21 +52,38 @@ class IssuesController extends AppController
     public function add()
     {
         $issue = $this->Issues->newEntity();
+        //$user_id = 1;
+        // When user passes data
+        $uid = 1;
+        $user_id = $this->Issues->Users->find('all', ['conditions'=>['id'=>$uid]]);
+        // echo "<pre>";
+        // var_dump($user_id->isEmpty());
+        // if(!$user_id->isEmpty()){
+        //     var_dump($user_id->toArray());
+        // }
+        // echo "</pre>";
+        // exit(); 
         if ($this->request->is('post')) {
+            // echo "<pre>";
+            // var_dump($this->request->data);
+           
+            //$uid = $this->Auth->user('id');
+
+            $this->request->data['user_id'] = $uid;
             $issue = $this->Issues->patchEntity($issue, $this->request->data);
-            if ($this->Issues->save($issue)) {
-                $this->Flash->success(__('The issue has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The issue could not be saved. Please, try again.'));
-            }
+                if ($this->Issues->save($issue)) {
+                    $this->Flash->success(__('The issue has been saved.'));
+                    return $this->redirect(['action' => 'index']);
+                } else {
+                    $this->Flash->error(__('The issue could not be saved. Please, try again.'));
+                }
         }
         $users = $this->Issues->Users->find('list', ['limit' => 200]);
         $tags = $this->Issues->Tags->find('list', ['limit' => 200]);
-        $this->set(compact('issue', 'users', 'tags'));
+        $this->set(compact('issue', 'users', 'tags', "user_id"));
         $this->set('_serialize', ['issue']);
-    }
 
+    }
     /**
      * Edit method
      *
@@ -111,5 +128,13 @@ class IssuesController extends AppController
             $this->Flash->error(__('The issue could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+    /**
+    *Add new issue
+    *
+    *
+    */
+    public function addNewIssue($sMessage){
+        
     }
 }
