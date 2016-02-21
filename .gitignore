@@ -1,10 +1,12 @@
 # CakePHP 3
 
+*.css.map
+/webroot/.sass-cache/
 /vendor/*
 /config/app.php
 /tmp/*
 /logs/*
-
+notes.txt
 # CakePHP 2
 
 /app/tmp/*
