@@ -1,3 +1,8 @@
+<?php 
+echo "<pre>";
+var_dump($tags->toArray());
+echo "</pre>";
+ ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
@@ -22,9 +27,40 @@
             echo $this->Form->input('title');
             echo $this->Form->input('body');
             echo $this->Form->hidden('user_id', ['options' => $users, 'value' => $user_id]);
-            echo $this->Form->input('tags._ids', ['options' => $tags]);
+            // $tags = [
+            //     'hello',
+            //     'world',
+            //     'option1',
+            //     'option2'
+            // ];
+            echo $this->Form->input('tags', ['multiple'=>'multiple']);
         ?>
+        <?= $this->Html->script('javascript.js') ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
 </div>
+<?php 
+    echo $this->Html->css('selectize', ['block'=>true]);
+    echo $this->Html->css('selectize.default', ['block'=>true]);
+    echo $this->Html->script('selectize', ['block'=>true]);
+?>
+<?php $this->start('bottomScripts'); ?>
+<script>
+        $('select#tags').selectize({
+            delimiter: ',',
+            persist: false,
+            create: function(input) {
+                return {
+                    value: input,
+                    text: input
+                }
+        }
+    });
+
+</script>
+<?php $this->end(); ?>
+
+
+
+

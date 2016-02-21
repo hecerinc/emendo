@@ -64,12 +64,32 @@ class IssuesController extends AppController
         // echo "</pre>";
         // exit(); 
         if ($this->request->is('post')) {
+            //$uid = $this->Auth->user('id');
             // echo "<pre>";
             // var_dump($this->request->data);
-           
-            //$uid = $this->Auth->user('id');
-
+            // echo "</pre>";
+            // exit();
             $this->request->data['user_id'] = $uid;
+            foreach($this->request->data["tags"] as $tag){
+                if (is_numeric($tag)){
+                    $tagquery = $this->Issues->Tags->find('all', ['conditions'=>['id'=> $tag]]);
+                    if(!$tagquery->isEmpty()){
+                        $tag = $tagquery->first()->toArray()['name'];
+                    }
+                }
+                $tagquery = $this->Issues->Tags->find('all', ['conditions'=>['name'=> $tag]]);
+                //var_dump($this->request->data);
+                $newObject = $this->Issues->Tags->newEntity();
+                $newObject = $this->Issues->Tags->patchEntity($newObject,$this->request->data);
+                $newObject['name'] = $tag;
+                if ($tagquery->isEmpty()){
+                    echo "<pre> Enters </pre>";
+                    //$newTag = $this->Tags->newEntity();
+                    if ($this->Issues->Tags->save($newObject)){
+                        echo "<pre> works </pre>";
+                    }
+                }
+            }
             $issue = $this->Issues->patchEntity($issue, $this->request->data);
                 if ($this->Issues->save($issue)) {
                     $this->Flash->success(__('The issue has been saved.'));
@@ -82,6 +102,7 @@ class IssuesController extends AppController
         $tags = $this->Issues->Tags->find('list', ['limit' => 200]);
         $this->set(compact('issue', 'users', 'tags', "user_id"));
         $this->set('_serialize', ['issue']);
+
 
     }
     /**
@@ -128,13 +149,5 @@ class IssuesController extends AppController
             $this->Flash->error(__('The issue could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
-    }
-    /**
-    *Add new issue
-    *
-    *
-    */
-    public function addNewIssue($sMessage){
-        
     }
 }
