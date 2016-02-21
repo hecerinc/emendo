@@ -1,5 +1,5 @@
 <pre>
-<?php var_dump($issue); ?>
+<?php var_dump($issue["comments"]); ?>
 </pre>
 <?php 
 	use Cake\I18n\Time;
@@ -79,7 +79,7 @@
 					<p>Ordenar por: &nbsp; <a href="#" class="timeline strong text">Tiempo</a>&nbsp; <a href="#" class="votes">Votos</a></p>
 				</div>
 				<div class="clear h20px"></div>
-				<?php for($i = 0; $i < 3; $i++): ?>
+				<?php foreach ($issue["comments"] as $comment): ?>
 				<div class="row comment">
 					<div class="one column avatar-votes">
 						<a href="#" class="avatar">
@@ -97,13 +97,18 @@
 						</div>
 					</div>
 					<div class="eleven columns comment-body">
-						<a href="#" class="user main">EliasMera</a>
-						<div class="clear"></div>
-						<a href="#" class="edit-history">Ver historial</a>
-						<p class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad ipsam nam maxime architecto modi eligendi vitae minima quia, ut consequuntur, delectus, officia porro corporis fugit natus, numquam molestiae optio in rerum tenetur? Numquam fugiat, laudantium totam recusandae magnam eligendi natus corporis alias, dolor saepe quos quaerat impedit dolorum, ex voluptas quae. </p>
+							<a href="#" class="user main">
+								<?= $comment["user"]["name"] ?>
+							</a>
+							<div class="clear"></div>
+							<div class="clear"></div>
+							<a href="#" class="edit-history">Ver historial</a>
+							<p class="body"> 
+							<?= $comment["body"]?>
+							</p>
 					</div>
 				</div>
-				<?php endfor; ?>
+				<?php endforeach; ?>
 				<a href="#" class="load-more">Load more...</a>
 			</section>
 		</div>
