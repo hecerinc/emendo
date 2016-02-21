@@ -1,8 +1,6 @@
-
 <pre>
 <?php 
 	use Cake\I18n\Time;
-	var_dump($issue->toArray()); 
 	function prettyDate($time)
     {
     	$now = Time::now();
@@ -54,6 +52,8 @@
     }
 ?>	
 </pre>
+
+
 <div class="container view-issue">
 	<div class="row">
 		<div class="eight columns">
@@ -122,12 +122,9 @@
 				<h4>Etiquetas</h4>
 				<div class="clear h20px"></div>
 				<ul class="tag-list cf">
-				<?php for ($i=0; $i < 2; $i++):?>
-					<li class="tag"><a href="#">lorem</a></li>
-					<li class="tag"><a href="#">ipsum</a></li>
-					<li class="tag"><a href="#">dolor</a></li>
-					<li class="tag"><a href="#">really long tag along play</a></li>
-				<?php endfor; ?>
+				<?php foreach ($issue['tags'] as $tag): ?>
+					<li class="tag"><a href="#"><?= $tag['name']; ?></a></li>
+				<?php endforeach; ?>
 				</ul>
 			</section>
 			<hr>
