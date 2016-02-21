@@ -66,16 +66,8 @@ class VotesController extends AppController
                     ]);
 
                 if($req_vote->isEmpty()){
-                    // No vote exists yet, then create vote
-                    $newVote = $this->Votes->newEntity();
-                    // Uncomment this later
-                    // $this->request->data['user_id'] = $this->Auth->user('id');
-                    $newVote = $this->Votes->patchEntity($newVote, 
-                                                        $this->request->data);
-                    if($this->Votes->save($newVote)){
-                        // Update vote count
-                        $this->updateCount($issue_id, true);
-                    }
+                    // No vote exists yet, then create vote 
+                    createIssueVote($this->request->data, $issue_id);
                 }
                 else{
                     // Delete vote (When both are positive or both are negative)
@@ -96,7 +88,8 @@ class VotesController extends AppController
                     }
                 }
             }
-            // If it's not an issue, it's a comment
+            // If it's not an issue, it should be a comment
+            // Test anyways to avoid user havoc
             elseif(isset($comment_id)){
                 // Check if vote already exists
                 $req_vote = $this->Votes->find('all', [
@@ -104,15 +97,7 @@ class VotesController extends AppController
                     ]);
 
                 if($req_vote->isEmpty()){
-                    // No vote exists yet, then create vote
-                    $newVote = $this->Votes->newEntity();
-                    // Uncomment this later
-                    // $this->request->data['user_id'] = $this->Auth->user('id');
-                    $newVote = $this->Votes->patchEntity($newVote, 
-                                                        $this->request->data);
-                    if($this->Votes->save($newVote)){
-                        $this->updateCount($comment_id, false);
-                    }
+                    createCommentVote($this->request->data, $issue_id);
                 }
                 else{
                     $result = $req_vote->first()->toArray();
@@ -154,9 +139,41 @@ class VotesController extends AppController
         */
     }
 
+
+    /**
+     * Method to create a vote to a specific issue by a particular user
+     */
+    private function createIssueVote($issueData, $id)
+    {
+        $newVote = $this->Votes->newEntity();
+        // Uncomment this later
+        // $this->request->data['user_id'] = $this->Auth->user('id');
+        $newVote = $this->Votes->patchEntity($newVote, $issueData);
+        if($this->Votes->save($newVote)){
+            // Update vote count
+            $this->updateCount($issue_id, false);
+        }
+    }
+
+
+    /**
+     * Method to create a vote to a specific comment by a particular user
+     */
+    private function createIssueVote($commentData, $id)
+    {
+        $newVote = $this->Votes->newEntity();
+        // Uncomment this later
+        // $this->request->data['user_id'] = $this->Auth->user('id');
+        $newVote = $this->Votes->patchEntity($newVote, $commentData);
+        if($this->Votes->save($newVote)){
+            // Update vote count
+            $this->updateCount($issue_id, true);
+        }
+    }
+
+
      /**
      * Update vote count method
-     *
      */
     private function updateCount($id, $isIssue)
     {
