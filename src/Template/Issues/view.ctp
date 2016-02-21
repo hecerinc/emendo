@@ -1,4 +1,6 @@
 <pre>
+<?php var_dump($issue); ?>
+</pre>
 <?php 
 	use Cake\I18n\Time;
 	function prettyDate($time)
@@ -51,7 +53,6 @@
     	return $pretty;
     }
 ?>	
-</pre>
 
 
 <div class="container view-issue">
@@ -112,7 +113,7 @@
 				<a href="#" class="caret caret-up">
 					<?= file_get_contents(WWW_ROOT.'img/caret.svg'); ?>
 				</a>
-				<p class="vote-counter">250</p>
+				<p class="vote-counter"><?= $vote_count ?></p>
 				<a href="#" class="caret caret-down">
 					<?= file_get_contents(WWW_ROOT.'img/caret.svg'); ?>
 				</a>
