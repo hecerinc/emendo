@@ -2,11 +2,12 @@
 notes.txt
 *.css.map
 /webroot/.sass-cache/
+/webroot/style.css
 /vendor/*
 /config/app.php
 /tmp/*
 /logs/*
-html/.sass-cache/
+/html/*
 
 # CakePHP 2
 
