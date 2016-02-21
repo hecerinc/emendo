@@ -57,66 +57,81 @@ class VotesController extends AppController
         // Extract variables from data
         if($this->request->is('post')){
 
+            extract($this->request->data);
+            // If the vote was made to an issue
+            if(isset($issue_id)){
+                // Check if vote already exists
+                $req_vote = $this->Votes->find('all', [
+                    'conditions'=>['issue_id'=>$issue_id, 'user_id'=>$user_id]
+                    ]);
 
-        extract($this->request->data);
-        // If the vote was made to an issue
-        if(isset($issue_id)){
-            // Check if vote already exists
-            $req_vote = $this->Votes->find('all', [
-                'conditions'=>['issue_id'=>$issue_id, 'user_id'=>$user_id]
-                ]);
-
-            if($req_vote->isEmpty()){
-                // No vote exists yet, then create vote
-                $newVote = $this->Votes->newEntity();
-                // Uncomment this later
-                // $this->request->data['user_id'] = $this->Auth->user('id');
-                $this->request->data['user_id'] = 1;
-                $newVote = $this->Votes->patchEntity($newVote, 
-                                                    $this->request->data);
-                // try to save
-                echo ("<pre>");
-                var_dump($newVote);
-                echo ("</pre>");
-
-                if($this->Votes->save($newVote)){
-                    echo("aksjdfaoisdjfoiasdjfio");
-                    // Vote was successfull
-                    exit();
-                    // Update vote count
-                    //updateCount($issue_id, true);
-                }
-            }
-            else{
-                // There are 3 operations for a vote update:
-                // Change vote from positive to negative
-                // Change vote from negative to positive
-                // Delete vote (When both are positive or both are negative)
-                $result = $req_vote->first();
-                $result = $result->toArray();
-                echo ("<pre>");
-                var_dump($result);
-                echo ("</pre>");
-
-                if($vote && $result['vote'] || !$vote && !$result['vote']){
-                    $voteEntity = $this->Votes->get($result['id']);
-                    $result = $this->Votes->delete($voteEntity);
-                }
-                else{
+                if($req_vote->isEmpty()){
+                    // No vote exists yet, then create vote
                     $newVote = $this->Votes->newEntity();
-                    $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
-                    $newVote["id"] = $result['id'];
+                    // Uncomment this later
+                    // $this->request->data['user_id'] = $this->Auth->user('id');
+                    $newVote = $this->Votes->patchEntity($newVote, 
+                                                        $this->request->data);
                     if($this->Votes->save($newVote)){
+                        // Update vote count
                         $this->updateCount($issue_id, true);
                     }
                 }
+                else{
+                    // Delete vote (When both are positive or both are negative)
+                    $result = $req_vote->first()->toArray();
+                    if($vote && $result['vote'] || !$vote && !$result['vote']){
+                        $voteEntity = $this->Votes->get($result['id']);
+                        $result = $this->Votes->delete($voteEntity);
+                        $this->updateCount($comment_id, true);
+                    }
+                    // Invert vote (from positive to negative && viceversa)
+                    else{
+                        $newVote = $this->Votes->newEntity();
+                        $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
+                        $newVote["id"] = $result['id'];
+                        if($this->Votes->save($newVote)){
+                            $this->updateCount($issue_id, true);
+                        }
+                    }
+                }
             }
-        
-        }
-        // If it's not an issue, it's a comment
-        else{
+            // If it's not an issue, it's a comment
+            elseif(isset($comment_id)){
+                // Check if vote already exists
+                $req_vote = $this->Votes->find('all', [
+                    'conditions'=>['comment_id'=>$comment_id, 'user_id'=>$user_id]
+                    ]);
 
-        }
+                if($req_vote->isEmpty()){
+                    // No vote exists yet, then create vote
+                    $newVote = $this->Votes->newEntity();
+                    // Uncomment this later
+                    // $this->request->data['user_id'] = $this->Auth->user('id');
+                    $newVote = $this->Votes->patchEntity($newVote, 
+                                                        $this->request->data);
+                    if($this->Votes->save($newVote)){
+                        $this->updateCount($comment_id, false);
+                    }
+                }
+                else{
+                    $result = $req_vote->first()->toArray();
+                    if($vote && $result['vote'] || !$vote && !$result['vote']){
+                        $voteEntity = $this->Votes->get($result['id']);
+                        $result = $this->Votes->delete($voteEntity);
+                        $this->updateCount($comment_id, false);
+                    }
+                    else{
+                        $newVote = $this->Votes->newEntity();
+                        $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
+                        $newVote["id"] = $result['id'];
+                        if($this->Votes->save($newVote)){
+                            $this->updateCount($comment_id, false);
+                        }
+                    }
+                }
+
+            }
         }
         $users = $this->Votes->Users->find('list', ['limit' => 200]);
         $issues = $this->Votes->Issues->find('list', ['limit' => 200]);
