@@ -54,9 +54,9 @@ class VotesController extends AppController
         // Always false to allow testing
         if(!$this->request->is('ajax') && false)
             throw new NotFoundException('You can\'t access that');
+
         // Extract variables from data
         if($this->request->is('post')){
-
             extract($this->request->data);
             // If the vote was made to an issue
             if(isset($issue_id)){
@@ -67,7 +67,7 @@ class VotesController extends AppController
 
                 if($req_vote->isEmpty()){
                     // No vote exists yet, then create vote 
-                    createIssueVote($this->request->data, $issue_id);
+                    $this->createIssueVote($this->request->data, $issue_id);
                 }
                 else{
                     // Delete vote (When both are positive or both are negative)
@@ -97,7 +97,7 @@ class VotesController extends AppController
                     ]);
 
                 if($req_vote->isEmpty()){
-                    createCommentVote($this->request->data, $issue_id);
+                    $this->createCommentVote($this->request->data, $issue_id);
                 }
                 else{
                     $result = $req_vote->first()->toArray();
