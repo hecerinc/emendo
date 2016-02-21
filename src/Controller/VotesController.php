@@ -76,7 +76,7 @@ class VotesController extends AppController
 				$voteObj = $this->createVote($field, $value, $this->request->data['vote']);
 				if($this->Votes->save($voteObj)){
 					// Success!
-					$count = $this->updatedCount($field, $value);
+					$count = $this->Votes->updatedCount($field, $value);
 					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
 				}
 			}
@@ -88,7 +88,7 @@ class VotesController extends AppController
 				if($vote && $result->vote || !$vote && !$result->vote){
 					$voteEntity = $this->Votes->get($result['id']);
 					$result = $this->Votes->delete($voteEntity);
-					$count = $this->updatedCount($field, $value);
+					$count = $this->Votes->updatedCount($field, $value);
 					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
 				}
 				else{
@@ -96,7 +96,7 @@ class VotesController extends AppController
 					$result->vote = $vote;
 					if($this->Votes->save($result)){
 						// Success!
-						$count = $this->updatedCount($field, $value);
+						$count = $this->Votes->updatedCount($field, $value);
 						echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
 					}
 					else{
@@ -127,29 +127,7 @@ class VotesController extends AppController
 
 
 
-	/**
-	 * Update vote count method
-	 */
-	private function updatedCount($category, $id){
-		$query = $this->Votes->findAllByIssueId($id);
-		// Find all votes
-		$allVotes = $query->count();
-		// Find downvotes
-		$query2 = $this->Votes->find('all', [
-			'conditions'=>[
-				'vote' => false,
-				$category => $id
-			]
-		]);
-		$falseVotes = $query2->count();
-
-		// Positive votes
-		$totalCount = $allVotes - $falseVotes;
-
-		// Return some json with new vote count
-		return $totalCount;
-	}
-
+	
 	/**
 	 * Edit method
 	 *

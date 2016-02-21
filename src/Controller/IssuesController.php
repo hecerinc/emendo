@@ -38,10 +38,11 @@ class IssuesController extends AppController
 	{
 		$this->viewBuilder()->layout('user');
 		$issue = $this->Issues->get($id, [
-			'contain' => ['Users', 'Tags', 'Comments', 'Photos', 'Votes']
+			'contain' => ['Users', 'Tags', 'Comments', 'Comments.Users', 'Photos', 'Votes']
 		]);
-
+		$vote_count = $this->Issues->Votes->updatedCount('issue_id', $id);
 		$this->set('issue', $issue);
+		$this->set(compact('vote_count'));
 		$this->set('_serialize', ['issue']);
 	}
 
