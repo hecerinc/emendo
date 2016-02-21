@@ -1,6 +1,4 @@
-<pre>
-<?php var_dump($issue["comments"]); ?>
-</pre>
+
 <?php 
 	use Cake\I18n\Time;
 	function prettyDate($time)
