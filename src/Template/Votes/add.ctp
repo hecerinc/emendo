@@ -16,9 +16,9 @@
         <legend><?= __('Add Vote') ?></legend>
         <?php
             echo $this->Form->input('vote');
-            echo $this->Form->input('user_id', ['options' => $users]);
-            echo $this->Form->input('issue_id', ['options' => $issues]);
-            echo $this->Form->input('comment_id', ['options' => $comments]);
+            echo $this->Form->input('user_id', ['type' => 'text']);
+            echo $this->Form->input('issue_id', ['type' => 'text']);
+            echo $this->Form->input('comment_id', ['type' => 'text']);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
