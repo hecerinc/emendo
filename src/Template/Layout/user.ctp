@@ -23,7 +23,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 	<title>
 		<?= $this->fetch('title') ?>
 	</title>
-	<?= $this->Html->meta('icon') ?>
+	<?php // echo $this->Html->meta('icon'); ?>
 
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
 
@@ -47,6 +47,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 				</ul>
 			</nav>
 		</header>
+		<div class="clear h80px"></div>
 	</div>
 	<?= $this->Flash->render() ?>
 	<?= $this->fetch('content') ?>

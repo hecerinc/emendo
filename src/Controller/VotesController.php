@@ -51,68 +51,76 @@ class VotesController extends AppController
 	 *
 	 * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
 	 */
-	public function add(){
+	public function updatevote(){
 		// Always false to allow testing
-		if(!$this->request->is('ajax') && false)
+		$this->autoRender = false;
+		if(!$this->request->is('ajax'))
 			throw new ForbiddenException('You can\'t access that');
 
-
 		// Extract variables from data
-		if($this->request->is('post')){
-			extract($this->request->data);
-			if(empty($issue_id) && empty($comment_id))
-				throw new NotAcceptableException('No comment or issue passed');
+		$data = $this->request->input();
+		$data = json_decode($data, true);
+		extract($data);
+		
+		if(!isset($issue_id) && !isset($comment_id))
+			throw new NotAcceptableException('No comment or issue passed');
 
-			// Check if vote already exists
+		// Check if vote already exists
+		$user_id = 1; // UNCOMMENT
+		$field = isset($issue_id)?'issue_id':'comment_id';
+		$value = isset($issue_id)?$issue_id:$comment_id;
+		$req_vote = $this->Votes->find('all', [
+			'conditions' => [$field => $value, 'user_id'=>$user_id]
+		]);
+	
 
-			$field = !empty($issue_id)?'issue_id':'comment_id';
-			$value = !empty($issue_id)?$issue_id:$comment_id;
-			$req_vote = $this->Votes->find('all', [
-				'conditions' => [$field => $value, 'user_id'=>$user_id]
-			]);
+		if($req_vote->isEmpty()){
+			// No vote exists yet, then create vote and save it
 
-			if($req_vote->isEmpty()){
-				// No vote exists yet, then create vote and save it
-				$voteObj = $this->createVote($field, $value, $this->request->data['vote']);
-				if($this->Votes->save($voteObj)){
+			$voteObj = $this->createVote($field, $value, $vote);
+		
+			if($this->Votes->save($voteObj)){
+				// Success!
+				$count = $this->Votes->updatedCount($field, $value);
+				echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
+			}
+			else{
+				var_dump("Failed!");
+				exit();
+			}
+		}
+		else{
+			// Delete vote (When both are positive or both are negative)
+			// When user clicked on the same vote that he had already clicked on before,
+			// assume he wants to delete his vote
+			$result = $req_vote->first();
+			if($vote && $result->vote || !$vote && !$result->vote){
+				$voteEntity = $this->Votes->get($result['id']);
+				$result = $this->Votes->delete($voteEntity);
+				$count = $this->Votes->updatedCount($field, $value);
+				echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
+			}
+			else{
+				// Invert vote (from positive to negative && viceversa)
+				$result->vote = $vote;
+				if($this->Votes->save($result)){
 					// Success!
 					$count = $this->Votes->updatedCount($field, $value);
 					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
 				}
-			}
-			else{
-				// Delete vote (When both are positive or both are negative)
-				// When user clicked on the same vote that he had already clicked on before,
-				// assume he wants to delete his vote
-				$result = $req_vote->first();
-				if($vote && $result->vote || !$vote && !$result->vote){
-					$voteEntity = $this->Votes->get($result['id']);
-					$result = $this->Votes->delete($voteEntity);
-					$count = $this->Votes->updatedCount($field, $value);
-					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
-				}
 				else{
-					// Invert vote (from positive to negative && viceversa)
-					$result->vote = $vote;
-					if($this->Votes->save($result)){
-						// Success!
-						$count = $this->Votes->updatedCount($field, $value);
-						echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
-					}
-					else{
-						// Fail :(
-						echo json_encode(['code'=>150, 'msg'=>'Could not save your vote right now :(']);
-					}
+					// Fail :(
+					echo json_encode(['code'=>150, 'msg'=>'Could not save your vote right now :(']);
 				}
 			}
-			exit();
 		}
-		$users = $this->Votes->Users->find('list', ['limit' => 200]);
-		$issues = $this->Votes->Issues->find('list', ['limit' => 200]);
-		$comments = $this->Votes->Comments->find('list', ['limit' => 200]);
-		$vote = $this->Votes->newEntity();
-		$this->set(compact('vote', 'users', 'issues', 'comments'));
-		$this->set('_serialize', ['vote']);
+			// exit();
+		// $users = $this->Votes->Users->find('list', ['limit' => 200]);
+		// $issues = $this->Votes->Issues->find('list', ['limit' => 200]);
+		// $comments = $this->Votes->Comments->find('list', ['limit' => 200]);
+		// $vote = $this->Votes->newEntity();
+		// $this->set(compact('vote', 'users', 'issues', 'comments'));
+		// $this->set('_serialize', ['vote']);
 	
 	}
 	private function createVote($type, $id, $vote){
@@ -122,6 +130,7 @@ class VotesController extends AppController
 		elseif($type == 'comment_id')
 			$voteObj->comment_id = $id;
 		$voteObj->vote = $vote;
+		$voteObj->user_id = 1;
 		return $voteObj;
 	}
 
