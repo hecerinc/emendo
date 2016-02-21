@@ -52,13 +52,16 @@ class CommentsController extends AppController
     public function add()
     {
         $this->autoRender = false;
-        if(!$this->request->is('ajax') && false)
-            throw new NotFoundException('You cant access that');
+        if(!$this->request->is('ajax') && true)
+            //throw new NotFoundException('You cant access that');
         // conseguir el user_id del user loggeado
         // $user_id => $this->Auth->user('id');
-        $issue_id = $this->request->data['issue_id'];
-        $user_id = 1;
-        $this->request->data['user_id'] = $user_id;
+        //$issue_id = $this->request->data['issue_id'];
+        $issue_id = 1;
+        // var_dump($this->request->data["user_id"]);
+        $this->request->data["user_id"] = 1;
+        $this->request->data["issue_id"] = 61;
+        //$user_id = 1;
         $comment = $this->Comments->newEntity();
         $comment = $this->Comments->patchEntity($comment, $this->request->data);
         if ($this->Comments->save($comment)) {
