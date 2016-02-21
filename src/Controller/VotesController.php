@@ -159,7 +159,7 @@ class VotesController extends AppController
     /**
      * Method to create a vote to a specific comment by a particular user
      */
-    private function createIssueVote($commentData, $id)
+    private function createCommentVote($commentData, $id)
     {
         $newVote = $this->Votes->newEntity();
         // Uncomment this later
