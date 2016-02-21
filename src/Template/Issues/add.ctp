@@ -26,7 +26,6 @@ echo "</pre>";
         <?php
             echo $this->Form->input('title');
             echo $this->Form->input('body');
-            echo $this->Form->hidden('user_id', ['options' => $users, 'value' => $user_id]);
             // $tags = [
             //     'hello',
             //     'world',

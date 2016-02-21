@@ -21,40 +21,53 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 	<?= $this->Html->charset() ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>
-		<?= $cakeDescription ?>:
 		<?= $this->fetch('title') ?>
 	</title>
 	<?= $this->Html->meta('icon') ?>
 
-	<?= $this->Html->css('base.css') ?>
-	<?= $this->Html->css('cake.css') ?>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
 
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<?= $this->Html->css(['normalize', 'skeleton', '/style.css',]); ?>
+
+	<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
 	
 	<?= $this->fetch('meta') ?>
 	<?= $this->fetch('css') ?>
 	<?= $this->fetch('script') ?>
 </head>
 <body>
-	<nav class="top-bar expanded" data-topbar role="navigation">
-		<ul class="title-area large-3 medium-4 columns">
-			<li class="name">
-				<h1><a href=""><?= $this->fetch('title') ?></a></h1>
-			</li>
-		</ul>
-		<section class="top-bar-section">
-			<ul class="right">
-				<li><a target="_blank" href="http://book.cakephp.org/3.0/">Documentation</a></li>
-				<li><a target="_blank" href="http://api.cakephp.org/3.0/">API</a></li>
-			</ul>
-		</section>
-	</nav>
+	<div class="container headC">
+		<header class="header">
+			<a href="#" class="logo">Logo</a>
+			<nav class="main-nav u-fr">
+				<ul class="inline cf">
+					<li><a href="#">Inicio</a></li>
+					<li><a href="#">Issues</a></li>
+					<li><a href="#">Contacto</a></li>
+				</ul>
+			</nav>
+		</header>
+	</div>
 	<?= $this->Flash->render() ?>
-	<section class="container clearfix">
-		<?= $this->fetch('content') ?>
-	</section>
-	<footer>
+	<?= $this->fetch('content') ?>
+	<footer class="footer">
+		<div class="container">
+			<div class="u-fl">
+				<a href="#"><strong>Lorem ipsum</strong></a>
+				<nav class="footer-nav">
+					<ul class="cf">
+						<li><a href="#">Contact</a></li>
+						<li><a href="#">About us</a></li>
+						<li><a href="#">Issues</a></li>
+					</ul>
+				</nav>
+			</div>
+			<div class="u-fr">
+				<a href="#" class="logo-small">Logo</a>
+			</div>
+		</div>
 	</footer>
+	<div class="clear h40px"></div>
 	<?= $this->fetch('bottomScripts'); ?>
 </body>
 </html>
