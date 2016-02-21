@@ -107,7 +107,7 @@ class VotesController extends AppController
                     $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
                     $newVote["id"] = $result['id'];
                     if($this->Votes->save($newVote)){
-                        //updateCount($issue_id, true);
+                        $this->updateCount($issue_id, true);
                     }
                 }
             }
@@ -142,14 +142,13 @@ class VotesController extends AppController
      /**
      * Update vote count method
      *
-     * 
      */
-    public function updateCount($id, $isIssue)
+    private function updateCount($id, $isIssue)
     {
         if($isIssue){
-            $query = $this->Vote->findAllByIssueId($id);
+            $query = $this->Votes->findAllByIssueId($id);
             $allVotes = $query->count();
-            $query2 = $this->Vote->find('all', [
+            $query2 = $this->Votes->find('all', [
                 'conditions'=>[
                     'vote'=>false,
                     'issue_id'=>$id
@@ -161,9 +160,9 @@ class VotesController extends AppController
             echo json_encode(['totalVotes'=>$totalCount]);
         }
         else{
-            $query = $this->Vote->findAllByCommentId($id);
+            $query = $this->Votes->findAllByCommentId($id);
             $allVotes = $query->count();
-            $query2 = $this->Vote->find('all', [
+            $query2 = $this->Votes->find('all', [
                 'conditions'=>[
                     'vote'=>false,
                     'issue_id'=>$id
