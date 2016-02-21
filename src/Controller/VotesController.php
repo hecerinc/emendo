@@ -92,12 +92,67 @@ class VotesController extends AppController
                 // Delete vote (When both are positive or both are negative)
                 //if($req_vote[]
             }
+        
+        }
+        // If it's not an issue, it's a comment
+        else{
+
         }
         $users = $this->Votes->Users->find('list', ['limit' => 200]);
         $issues = $this->Votes->Issues->find('list', ['limit' => 200]);
         $comments = $this->Votes->Comments->find('list', ['limit' => 200]);
         $this->set(compact('vote', 'users', 'issues', 'comments'));
         $this->set('_serialize', ['vote']);
+        /*
+        elseif ($a == $b) {
+        $vote = $this->Votes->newEntity();
+        $vote = $this->Votes->patchEntity($vote, $this->request->data);
+
+
+        if ($this->Votes->save($vote)) {
+            $this->Flash->success(__('The vote has been saved.'));
+            return $this->redirect(['action' => 'index']);
+        } else {
+            $this->Flash->error(__('The vote could not be saved. Please, try again.'));
+        }
+        
+        */
+    }
+
+     /**
+     * Update vote count method
+     *
+     * 
+     */
+    public function updateCount($id, $isIssue)
+    {
+        if($isIssue){
+            $query = $this->Vote->findAllByIssueId($id);
+            $allVotes = $query->count();
+            $query2 = $this->Vote->find('all', [
+                'conditions'=>[
+                    'vote'=>false,
+                    'issue_id'=>$id
+                ]
+            ]);
+            $falseVotes = $query2->count();
+            $totalCount = $allVotes - $falseVotes;
+            // Return some json with new vote count
+            echo json_encode(['totalVotes'=>$totalCount]);
+        }
+        else{
+            $query = $this->Vote->findAllByCommentId($id);
+            $allVotes = $query->count();
+            $query2 = $this->Vote->find('all', [
+                'conditions'=>[
+                    'vote'=>false,
+                    'issue_id'=>$id
+                ]
+            ]);
+            $falseVotes = $query2->count();
+            $totalCount = $allVotes - $falseVotes;
+            echo json_encode(['totalVotes'=>$totalCount]);
+        }
     }
 
     /**
