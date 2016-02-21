@@ -60,7 +60,7 @@ class CommentsController extends AppController
         $issue_id = 1;
         // var_dump($this->request->data["user_id"]);
         $this->request->data["user_id"] = 1;
-        $this->request->data["issue_id"] = 61;
+        $this->request->data["issue_id"] = 1;
         //$user_id = 1;
         $comment = $this->Comments->newEntity();
         $comment = $this->Comments->patchEntity($comment, $this->request->data);
