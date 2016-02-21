@@ -36,6 +36,7 @@ class IssuesController extends AppController
      */
     public function view($id = null)
     {
+        $this->viewBuilder()->layout('user');
         $issue = $this->Issues->get($id, [
             'contain' => ['Users', 'Tags', 'Comments', 'Photos', 'Votes']
         ]);
