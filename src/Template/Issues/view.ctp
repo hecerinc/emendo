@@ -1,3 +1,58 @@
+<pre>
+<?php 
+	use Cake\I18n\Time;
+	function prettyDate($time)
+    {
+    	$now = Time::now();
+    	$pretty = "Hace ";
+    	$yearDiff = $now->year - $time->year;
+    	$monthDiff = $now->month - $time->month;
+    	$dayDiff = $now->day - $time->day;
+    	$hourDiff = $now->hour - $time->hour;
+    	$minuteDiff = $now->minute - $time->minute;
+    	if($yearDiff > 0){
+    		$pretty .= strval($yearDiff);
+    		if($yearDiff == 1)
+    			$pretty .= " año";
+    		else
+    			$pretty .= " años";
+    	}
+    	elseif($monthDiff > 0){
+    		$pretty .= strval($monthDiff);
+    		if($monthDiff == 1)
+    			$pretty .= " mes";
+    		else
+    			$pretty .= " meses";
+    	}
+    	elseif($dayDiff > 0){
+    		$pretty .= strval($dayDiff);
+    		if($dayDiff == 1)
+    			$pretty .= " dia";
+    		else
+    			$pretty .= " dias";
+    	}
+    	elseif($hourDiff > 0){
+    		$pretty .= strval($hourDiff);
+    		if($hourDiff == 1)
+    			$pretty .= " hora";
+    		else
+    			$pretty .= " horas";
+    	}
+    	elseif($minuteDiff > 0){
+    		$pretty .= strval($minuteDiff);
+    		if($minuteDiff == 1)
+    			$pretty .= " minuto";
+    		else
+    			$pretty .= " minutos";
+    	}
+    	else{
+    		$pretty = "Justo ahora";
+    	}
+    	return $pretty;
+    }
+?>	
+</pre>
+
 
 <div class="container view-issue">
 	<div class="row">
@@ -7,7 +62,7 @@
 				<div class="clear h30px"></div>
 				<div class="row">
 					<div class="status <?= $issue['is_closed']?'closed':'open'; ?> u-fl"><?= $issue['is_closed']?'Cerrado':'Abierto' ?></div>
-					<div class="user u-fl"><strong><?= !$issue['is_private']?'An&oacute;nimo':$issue['user']['name'] ?></strong> <br> <p>Hace 2 horas</p></div>
+					<div class="user u-fl"><strong><?= !$issue['is_private']?'An&oacute;nimo':$issue['user']['name'] ?></strong> <br><p></p><?= prettyDate($issue['created'])?></div> 
 					<div class="clear"></div>
 					<?php if($issue['parent_id'] != NULL): ?>
 						<a href="#" class="edit-history">Ver historial</a>
