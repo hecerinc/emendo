@@ -52,7 +52,7 @@ class CommentsController extends AppController
     public function add()
     {
         $this->autoRender = false;
-        if(!$this->request->is('ajax'))
+        if(!$this->request->is('ajax') && false)
             throw new NotFoundException('You cant access that');
         // conseguir el user_id del user loggeado
         // $user_id => $this->Auth->user('id');

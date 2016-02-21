@@ -34,4 +34,5 @@ class Issue extends Entity
         '*' => true,
         'id' => false,
     ];
+
 }

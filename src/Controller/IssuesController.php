@@ -105,6 +105,14 @@ class IssuesController extends AppController
 
 
     }
+    public function testtags(){
+        $this->autoRender = false;
+        $result = $this->Issues->searchByTag('pene');
+        echo "<pre>";
+        var_dump($result);
+        echo "</pre>";
+        exit();
+    }
     /**
      * Edit method
      *

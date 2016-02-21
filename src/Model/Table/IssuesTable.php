@@ -88,4 +88,23 @@ class IssuesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         return $rules;
     }
+    public function searchByTag($sName){
+        $query = $this->find();
+        $query->matching('Tags', function($q) use ($sName){
+            return $q->where(['Tags.name'=>$sName]);
+        });
+        // var_dump($query);
+        return $query;
+        // $tagid = $this->Tags->find('all', ['conditions'=>['name'=>$sName]]);
+        // if (!$tagid->isEmpty()){
+        //     // Get the id of the result
+        //     // $tag_id = $tagid->all();
+        //     $tag_id = $tagid->first();
+        //     $tag_id = $tag_id['id'];
+        //     $issuesWithThisTag = $this->find($tag_id);
+        //     return $issuesWithThisTag;
+
+        // }
+        // return false;
+    }
 }
