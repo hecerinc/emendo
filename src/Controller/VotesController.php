@@ -2,7 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\Network\Exception\ForbiddenException;
+use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Exception\NotAcceptableException;
 /**
  * Votes Controller
  *
@@ -11,245 +13,187 @@ use App\Controller\AppController;
 class VotesController extends AppController
 {
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Network\Response|null
-     */
-    public function index()
-    {
-        $this->paginate = [
-            'contain' => ['Users', 'Issues', 'Comments']
-        ];
-        $votes = $this->paginate($this->Votes);
+	/**
+	 * Index method
+	 *
+	 * @return \Cake\Network\Response|null
+	 */
+	public function index()
+	{
+		$this->paginate = [
+			'contain' => ['Users', 'Issues', 'Comments']
+		];
+		$votes = $this->paginate($this->Votes);
 
-        $this->set(compact('votes'));
-        $this->set('_serialize', ['votes']);
-    }
+		$this->set(compact('votes'));
+		$this->set('_serialize', ['votes']);
+	}
 
-    /**
-     * View method
-     *
-     * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $vote = $this->Votes->get($id, [
-            'contain' => ['Users', 'Issues', 'Comments']
-        ]);
+	/**
+	 * View method
+	 *
+	 * @param string|null $id Vote id.
+	 * @return \Cake\Network\Response|null
+	 * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+	 */
+	public function view($id = null)
+	{
+		$vote = $this->Votes->get($id, [
+			'contain' => ['Users', 'Issues', 'Comments']
+		]);
 
-        $this->set('vote', $vote);
-        $this->set('_serialize', ['vote']);
-    }
+		$this->set('vote', $vote);
+		$this->set('_serialize', ['vote']);
+	}
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        // Always false to allow testing
-        if(!$this->request->is('ajax') && false)
-            throw new NotFoundException('You can\'t access that');
-
-        // Extract variables from data
-        if($this->request->is('post')){
-            extract($this->request->data);
-            // If the vote was made to an issue
-            if(isset($issue_id)){
-                // Check if vote already exists
-                $req_vote = $this->Votes->find('all', [
-                    'conditions'=>['issue_id'=>$issue_id, 'user_id'=>$user_id]
-                    ]);
-
-                if($req_vote->isEmpty()){
-                    // No vote exists yet, then create vote 
-                    $this->createIssueVote($this->request->data, $issue_id);
-                }
-                else{
-                    // Delete vote (When both are positive or both are negative)
-                    $result = $req_vote->first()->toArray();
-                    if($vote && $result['vote'] || !$vote && !$result['vote']){
-                        $voteEntity = $this->Votes->get($result['id']);
-                        $result = $this->Votes->delete($voteEntity);
-                        $this->updateCount($comment_id, true);
-                    }
-                    // Invert vote (from positive to negative && viceversa)
-                    else{
-                        $newVote = $this->Votes->newEntity();
-                        $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
-                        $newVote["id"] = $result['id'];
-                        if($this->Votes->save($newVote)){
-                            $this->updateCount($issue_id, "issue");
-                        }
-                    }
-                }
-            }
-            // If it's not an issue, it should be a comment
-            // Test anyways to avoid user havoc
-            elseif(isset($comment_id)){
-                // Check if vote already exists
-                $req_vote = $this->Votes->find('all', [
-                    'conditions'=>['comment_id'=>$comment_id, 'user_id'=>$user_id]
-                    ]);
-
-                if($req_vote->isEmpty()){
-                    $this->createCommentVote($this->request->data, $issue_id);
-                }
-                else{
-                    $result = $req_vote->first()->toArray();
-                    if($vote && $result['vote'] || !$vote && !$result['vote']){
-                        $voteEntity = $this->Votes->get($result['id']);
-                        $result = $this->Votes->delete($voteEntity);
-                        $this->updateCount($comment_id, "comment");
-                    }
-                    else{
-                        $newVote = $this->Votes->newEntity();
-                        $newVote = $this->Votes->patchEntity($newVote, $this->request->data);
-                        $newVote["id"] = $result['id'];
-                        if($this->Votes->save($newVote)){
-                            $this->updateCount($comment_id, "comment");
-                        }
-                    }
-                }
-
-            }
-        }
-        $users = $this->Votes->Users->find('list', ['limit' => 200]);
-        $issues = $this->Votes->Issues->find('list', ['limit' => 200]);
-        $comments = $this->Votes->Comments->find('list', ['limit' => 200]);
-        $this->set(compact('vote', 'users', 'issues', 'comments'));
-        $this->set('_serialize', ['vote']);
-        /*
-        elseif ($a == $b) {
-        $vote = $this->Votes->newEntity();
-        $vote = $this->Votes->patchEntity($vote, $this->request->data);
+	/**
+	 * Add method
+	 *
+	 * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+	 */
+	public function add(){
+		// Always false to allow testing
+		if(!$this->request->is('ajax') && false)
+			throw new ForbiddenException('You can\'t access that');
 
 
-        if ($this->Votes->save($vote)) {
-            $this->Flash->success(__('The vote has been saved.'));
-            return $this->redirect(['action' => 'index']);
-        } else {
-            $this->Flash->error(__('The vote could not be saved. Please, try again.'));
-        }
-        
-        */
-    }
+		// Extract variables from data
+		if($this->request->is('post')){
+			extract($this->request->data);
+			if(empty($issue_id) && empty($comment_id))
+				throw new NotAcceptableException('No comment or issue passed');
+
+			// Check if vote already exists
+
+			$field = !empty($issue_id)?'issue_id':'comment_id';
+			$value = !empty($issue_id)?$issue_id:$comment_id;
+			$req_vote = $this->Votes->find('all', [
+				'conditions' => [$field => $value, 'user_id'=>$user_id]
+			]);
+
+			if($req_vote->isEmpty()){
+				// No vote exists yet, then create vote and save it
+				$voteObj = $this->createVote($field, $value, $this->request->data['vote']);
+				if($this->Votes->save($voteObj)){
+					// Success!
+					$count = $this->updatedCount($field, $value);
+					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
+				}
+			}
+			else{
+				// Delete vote (When both are positive or both are negative)
+				// When user clicked on the same vote that he had already clicked on before,
+				// assume he wants to delete his vote
+				$result = $req_vote->first();
+				if($vote && $result->vote || !$vote && !$result->vote){
+					$voteEntity = $this->Votes->get($result['id']);
+					$result = $this->Votes->delete($voteEntity);
+					$count = $this->updatedCount($field, $value);
+					echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
+				}
+				else{
+					// Invert vote (from positive to negative && viceversa)
+					$result->vote = $vote;
+					if($this->Votes->save($result)){
+						// Success!
+						$count = $this->updatedCount($field, $value);
+						echo json_encode(['new_count'=>$count, 'msg'=>'success', 'code'=>200]);
+					}
+					else{
+						// Fail :(
+						echo json_encode(['code'=>150, 'msg'=>'Could not save your vote right now :(']);
+					}
+				}
+			}
+			exit();
+		}
+		$users = $this->Votes->Users->find('list', ['limit' => 200]);
+		$issues = $this->Votes->Issues->find('list', ['limit' => 200]);
+		$comments = $this->Votes->Comments->find('list', ['limit' => 200]);
+		$vote = $this->Votes->newEntity();
+		$this->set(compact('vote', 'users', 'issues', 'comments'));
+		$this->set('_serialize', ['vote']);
+	
+	}
+	private function createVote($type, $id, $vote){
+		$voteObj = $this->Votes->newEntity();
+		if($type == 'issue_id')
+			$voteObj->issue_id = $id;
+		elseif($type == 'comment_id')
+			$voteObj->comment_id = $id;
+		$voteObj->vote = $vote;
+		return $voteObj;
+	}
 
 
-    /**
-     * Method to create a vote to a specific issue by a particular user
-     */
-    private function createIssueVote($issueData, $id)
-    {
-        $newVote = $this->Votes->newEntity();
-        // Uncomment this later
-        // $this->request->data['user_id'] = $this->Auth->user('id');
-        $newVote = $this->Votes->patchEntity($newVote, $issueData);
-        if($this->Votes->save($newVote)){
-            // Update vote count
-            $this->updateCount($issue_id, "comment");
-        }
-    }
 
+	/**
+	 * Update vote count method
+	 */
+	private function updatedCount($category, $id){
+		$query = $this->Votes->findAllByIssueId($id);
+		// Find all votes
+		$allVotes = $query->count();
+		// Find downvotes
+		$query2 = $this->Votes->find('all', [
+			'conditions'=>[
+				'vote' => false,
+				$category => $id
+			]
+		]);
+		$falseVotes = $query2->count();
 
-    /**
-     * Method to create a vote to a specific comment by a particular user
-     */
-    private function createCommentVote($commentData, $id)
-    {
-        $newVote = $this->Votes->newEntity();
-        // Uncomment this later
-        // $this->request->data['user_id'] = $this->Auth->user('id');
-        $newVote = $this->Votes->patchEntity($newVote, $commentData);
-        if($this->Votes->save($newVote)){
-            // Update vote count
-            $this->updateCount($issue_id, "issue");
-        }
-    }
+		// Positive votes
+		$totalCount = $allVotes - $falseVotes;
 
+		// Return some json with new vote count
+		return $totalCount;
+	}
 
-     /**
-     * Update vote count method
-     */
-    private function updateCount($id, $category)
-    {
-        if($category == "issue"){
-            $query = $this->Votes->findAllByIssueId($id);
-            $allVotes = $query->count();
-            $query2 = $this->Votes->find('all', [
-                'conditions'=>[
-                    'vote'=>false,
-                    'issue_id'=>$id
-                ]
-            ]);
-            $falseVotes = $query2->count();
-            $totalCount = $allVotes - $falseVotes;
-            // Return some json with new vote count
-            echo json_encode(['totalVotes'=>$totalCount]);
-        }
-        elseif($category == "comment"){
-            $query = $this->Votes->findAllByCommentId($id);
-            $allVotes = $query->count();
-            $query2 = $this->Votes->find('all', [
-                'conditions'=>[
-                    'vote'=>false,
-                    'issue_id'=>$id
-                ]
-            ]);
-            $falseVotes = $query2->count();
-            $totalCount = $allVotes - $falseVotes;
-            echo json_encode(['totalVotes'=>$totalCount]);
-        }
-    }
+	/**
+	 * Edit method
+	 *
+	 * @param string|null $id Vote id.
+	 * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
+	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
+	 */
+	public function edit($id = null)
+	{
+		$vote = $this->Votes->get($id, [
+			'contain' => []
+		]);
+		if ($this->request->is(['patch', 'post', 'put'])) {
+			$vote = $this->Votes->patchEntity($vote, $this->request->data);
+			if ($this->Votes->save($vote)) {
+				$this->Flash->success(__('The vote has been saved.'));
+				return $this->redirect(['action' => 'index']);
+			} else {
+				$this->Flash->error(__('The vote could not be saved. Please, try again.'));
+			}
+		}
+		$users = $this->Votes->Users->find('list', ['limit' => 200]);
+		$issues = $this->Votes->Issues->find('list', ['limit' => 200]);
+		$comments = $this->Votes->Comments->find('list', ['limit' => 200]);
+		$this->set(compact('vote', 'users', 'issues', 'comments'));
+		$this->set('_serialize', ['vote']);
+	}
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $vote = $this->Votes->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $vote = $this->Votes->patchEntity($vote, $this->request->data);
-            if ($this->Votes->save($vote)) {
-                $this->Flash->success(__('The vote has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The vote could not be saved. Please, try again.'));
-            }
-        }
-        $users = $this->Votes->Users->find('list', ['limit' => 200]);
-        $issues = $this->Votes->Issues->find('list', ['limit' => 200]);
-        $comments = $this->Votes->Comments->find('list', ['limit' => 200]);
-        $this->set(compact('vote', 'users', 'issues', 'comments'));
-        $this->set('_serialize', ['vote']);
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $vote = $this->Votes->get($id);
-        if ($this->Votes->delete($vote)) {
-            $this->Flash->success(__('The vote has been deleted.'));
-        } else {
-            $this->Flash->error(__('The vote could not be deleted. Please, try again.'));
-        }
-        return $this->redirect(['action' => 'index']);
-    }
+	/**
+	 * Delete method
+	 *
+	 * @param string|null $id Vote id.
+	 * @return \Cake\Network\Response|null Redirects to index.
+	 * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+	 */
+	public function delete($id = null)
+	{
+		$this->request->allowMethod(['post', 'delete']);
+		$vote = $this->Votes->get($id);
+		if ($this->Votes->delete($vote)) {
+			$this->Flash->success(__('The vote has been deleted.'));
+		} else {
+			$this->Flash->error(__('The vote could not be deleted. Please, try again.'));
+		}
+		return $this->redirect(['action' => 'index']);
+	}
 }
