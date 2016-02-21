@@ -26,7 +26,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 	<?= $this->Html->meta('icon') ?>
 
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
-	
+
 	<?= $this->Html->css(['normalize', 'skeleton', '/style.css',]); ?>
 
 	<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
@@ -47,7 +47,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 				</ul>
 			</nav>
 		</header>
-		<div class="clear h80px"></div>
 	</div>
 	<?= $this->Flash->render() ?>
 	<?= $this->fetch('content') ?>
