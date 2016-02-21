@@ -1,0 +1,94 @@
+@import '_ui.scss';
+
+body{border-top:solid 10px $main;}
+strong, .strong{font-weight: 500;}
+p{font-weight: 300;}
+nav ul{list-style: none;}
+ul.inline li{float: left; display: block;}
+.headC{margin-top: 55px;}
+.main-nav{
+	li:not(:last-child){margin-right: 70px;}
+	a{font-size: 1.6rem; font-weight: 300; color: $main;}
+}
+.view-issue{
+	.comments{
+		padding-left:2%;
+	}
+	.load-more{
+		text-align: center;
+		display: block;
+		font-size: 2rem;
+		font-weight: 300;
+		margin-top: 20px;
+	}
+	.avatar-votes{
+		.votes p{font-size: 2.4rem; text-align: center; margin: 3px 0;}
+	}
+	.sidebar h4{
+		font-weight: 300;
+		font-size: 1.8rem;
+		color: $text;
+	}
+	.status{
+		color: #fff;
+		border-radius:40px;
+		padding:4px 20px;
+		font-weight: 500;
+		margin-top: 10px;
+		&.open{background-color:#24df9b;}
+	}
+	.issue-body{
+		.user{color: #97a0ad; margin-left: 15px;}
+	}
+	.votes{
+		.vote-counter{font-size: 4.8rem; text-align: center; margin: 0;}
+	}
+	.tags{
+		.tag a{
+			font-weight: 300;
+			font-size: 1.3rem;
+			background-color:#f1f1f1;
+			padding:3px 10px;
+			border-radius:31px;
+			color: $text;
+		}
+		.tag{
+			float: left;
+			margin-right: 10px;
+			list-style:none;
+		}
+	}
+	.caret{
+		width: 50px;
+		height: 20px;
+		display: block;
+		margin: 0 auto;
+		path{fill:#b2b2b2;}
+		&.caret-up svg{
+			transform:rotate(180deg);
+		}
+		&.caret-down{margin-top: -20px;}
+		&.caret-up{margin-bottom: 10px;}
+	}
+	.edit-history{font-weight: 300; font-size: 1.4rem; color: lighten($text, 25%);}
+	.comment{
+		.user{font-size: 1.6rem;}
+	}
+	.responsible{
+		p{margin: 0;}
+		.datos{width: 200px; margin: 0 auto;}
+		.name{font-size: 1.6rem;}
+		.desc{line-height: 120%;}
+		.desc, .email{font-size: 1.3rem;}
+		.email{font-weight: 300;}
+	}
+}
+.logo-small{font-size: 5.4rem; font-weight: 300; color: $main;}
+.logo{font-size: 4.8rem; font-weight: 300; color: $main;}
+footer{
+	a{color: $main; font-size: 1.6rem; font-weight: 300;}
+	.footer-nav{
+		margin-top: 15px;
+		li{margin: 0;}
+	}
+}
