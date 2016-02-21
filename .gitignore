@@ -1,11 +1,11 @@
 # CakePHP 3
 notes.txt
+*.css.map
+/webroot/.sass-cache/
 /vendor/*
 /config/app.php
 /tmp/*
 /logs/*
-*.css.map
-webroot/.sass-cache/
 html/.sass-cache/
 
 # CakePHP 2
