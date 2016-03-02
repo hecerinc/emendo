@@ -20,7 +20,9 @@ class CommentsControllerTest extends IntegrationTestCase
         'app.users',
         'app.issues',
         'app.photos',
-        'app.votes'
+        'app.votes',
+        'app.tags',
+        'app.issues_tags'
     ];
 
     /**

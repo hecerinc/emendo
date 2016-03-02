@@ -26,6 +26,9 @@
             echo $this->Form->input('body');
             echo $this->Form->input('user_id', ['options' => $users]);
             echo $this->Form->input('issue_id', ['options' => $issues]);
+            echo $this->Form->input('is_private');
+            echo $this->Form->input('is_latest');
+            echo $this->Form->input('parent_id');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

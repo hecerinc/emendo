@@ -14,6 +14,9 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\User $user
  * @property int $issue_id
  * @property \App\Model\Entity\Issue $issue
+ * @property bool $is_private
+ * @property bool $is_latest
+ * @property int $parent_id
  * @property \App\Model\Entity\Photo[] $photos
  * @property \App\Model\Entity\Vote[] $votes
  */

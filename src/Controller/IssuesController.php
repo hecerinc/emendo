@@ -41,7 +41,7 @@ class IssuesController extends AppController
 			'contain' => ['Users', 'Tags', 'Comments', 'Comments.Users', 'Photos', 'Votes']
 		]);
 		$vote_count = $this->Issues->Votes->updatedCount('issue_id', $id);
-		$this->set('issue', $issue);
+		$this->set('issue', $issue->toArray());
 		$this->set(compact('vote_count'));
 		$this->set('_serialize', ['issue']);
 	}

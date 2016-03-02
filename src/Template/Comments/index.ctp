@@ -22,6 +22,8 @@
                 <th><?= $this->Paginator->sort('modified') ?></th>
                 <th><?= $this->Paginator->sort('user_id') ?></th>
                 <th><?= $this->Paginator->sort('issue_id') ?></th>
+                <th><?= $this->Paginator->sort('is_private') ?></th>
+                <th><?= $this->Paginator->sort('is_latest') ?></th>
                 <th class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -33,6 +35,8 @@
                 <td><?= h($comment->modified) ?></td>
                 <td><?= $comment->has('user') ? $this->Html->link($comment->user->name, ['controller' => 'Users', 'action' => 'view', $comment->user->id]) : '' ?></td>
                 <td><?= $comment->has('issue') ? $this->Html->link($comment->issue->title, ['controller' => 'Issues', 'action' => 'view', $comment->issue->id]) : '' ?></td>
+                <td><?= h($comment->is_private) ?></td>
+                <td><?= h($comment->is_latest) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $comment->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $comment->id]) ?>

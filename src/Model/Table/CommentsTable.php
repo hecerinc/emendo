@@ -12,6 +12,8 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $Issues
+ * @property \Cake\ORM\Association\BelongsTo $ParentComments
+ * @property \Cake\ORM\Association\HasMany $ChildComments
  * @property \Cake\ORM\Association\HasMany $Photos
  * @property \Cake\ORM\Association\HasMany $Votes
  */
@@ -42,6 +44,14 @@ class CommentsTable extends Table
             'foreignKey' => 'issue_id',
             'joinType' => 'INNER'
         ]);
+        $this->belongsTo('ParentComments', [
+            'className' => 'Comments',
+            'foreignKey' => 'parent_id'
+        ]);
+        $this->hasMany('ChildComments', [
+            'className' => 'Comments',
+            'foreignKey' => 'parent_id'
+        ]);
         $this->hasMany('Photos', [
             'foreignKey' => 'comment_id'
         ]);
@@ -65,6 +75,16 @@ class CommentsTable extends Table
         $validator
             ->allowEmpty('body');
 
+        $validator
+            ->boolean('is_private')
+            ->requirePresence('is_private', 'create')
+            ->notEmpty('is_private');
+
+        $validator
+            ->boolean('is_latest')
+            ->requirePresence('is_latest', 'create')
+            ->notEmpty('is_latest');
+
         return $validator;
     }
 
@@ -79,6 +99,7 @@ class CommentsTable extends Table
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['issue_id'], 'Issues'));
+        $rules->add($rules->existsIn(['parent_id'], 'ParentComments'));
         return $rules;
     }
 }

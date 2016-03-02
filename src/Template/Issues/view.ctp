@@ -1,56 +1,9 @@
 <?php 
-	use Cake\I18n\Time;
-	function prettyDate($time){
-    	$now = Time::now();
-    	$pretty = "Hace ";
-    	$yearDiff = $now->year - $time->year;
-    	$monthDiff = $now->month - $time->month;
-    	$dayDiff = $now->day - $time->day;
-    	$hourDiff = $now->hour - $time->hour;
-    	$minuteDiff = $now->minute - $time->minute;
-    	if($yearDiff > 0){
-    		$pretty .= strval($yearDiff);
-    		if($yearDiff == 1)
-    			$pretty .= " año";
-    		else
-    			$pretty .= " años";
-    	}
-    	elseif($monthDiff > 0){
-    		$pretty .= strval($monthDiff);
-    		if($monthDiff == 1)
-    			$pretty .= " mes";
-    		else
-    			$pretty .= " meses";
-    	}
-    	elseif($dayDiff > 0){
-    		$pretty .= strval($dayDiff);
-    		if($dayDiff == 1)
-    			$pretty .= " dia";
-    		else
-    			$pretty .= " dias";
-    	}
-    	elseif($hourDiff > 0){
-    		$pretty .= strval($hourDiff);
-    		if($hourDiff == 1)
-    			$pretty .= " hora";
-    		else
-    			$pretty .= " horas";
-    	}
-    	elseif($minuteDiff > 0){
-    		$pretty .= strval($minuteDiff);
-    		if($minuteDiff == 1)
-    			$pretty .= " minuto";
-    		else
-    			$pretty .= " minutos";
-    	}
-    	else{
-    		$pretty = "Justo ahora";
-    	}
-    	return $pretty;
-    }
-?>	
-
-
+	// use Cake\I18n\I18n;
+	// use Cake\I18n\Time;
+	use Symfony\Component\Translation\Translator;
+	use Cake\Chronos\Chronos;
+?>
 <div class="container view-issue">
 	<div class="row">
 		<div class="eight columns">
@@ -58,8 +11,16 @@
 				<h1><?= $issue['title']; ?></h1>
 				<div class="clear h30px"></div>
 				<div class="row">
+					<?php 
+						// Parse date
+						$carbon = Chronos::parse($issue['created'], 'America/Mexico_City');
+						$carbon = $carbon->diffForHumans();
+					?>
 					<div class="status <?= $issue['is_closed']?'closed':'open'; ?> u-fl"><?= $issue['is_closed']?'Cerrado':'Abierto' ?></div>
-					<div class="user u-fl"><strong><?= !$issue['is_private']?'An&oacute;nimo':$issue['user']['name'] ?></strong> <br><p><?= prettyDate($issue['created'])?></p></div> 
+					<div class="user u-fl">
+						<strong><?= !$issue['is_private']?'An&oacute;nimo':$issue['user']['name'] ?></strong><br>
+						<p><?= $carbon ?></p>
+					</div> 
 					<div class="clear"></div>
 					<?php if($issue['parent_id'] != NULL): ?>
 						<a href="#" class="edit-history">Ver historial</a>
@@ -98,7 +59,13 @@
 								</a>
 								<div class="clear"></div>
 								<div class="clear"></div>
-								<a href="#" class="edit-history">Ver historial</a>
+								<?php 
+									$carbon = Chronos::parse($comment['created'], 'America/Mexico_City');
+								?>
+								<a href="#" class="edit-history"><?= $carbon->diffForHumans(); ?></a>
+								<?php if($comment['parent_id'] != NULL): ?>
+									<a href="#" class="edit-history">Ver historial</a>
+								<?php endif; ?>
 								<p class="body"> 
 								<?= $comment["body"]?>
 								</p>
@@ -136,7 +103,7 @@
 				<div class="datos">
 					<p class="name"><strong>Mario Bergoglio</strong></p>
 					<p class="desc">Representante de la CCNA en Monterrey</p>
-					<a href="#" class="email">mbergoglio@vaticon.holy</a>
+					<a href="#" class="email">mbergoglio@vatican.holy</a>
 				</div>
 			</section>
 			<hr>

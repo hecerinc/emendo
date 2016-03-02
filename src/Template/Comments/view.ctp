@@ -31,12 +31,24 @@
             <td><?= $this->Number->format($comment->id) ?></td>
         </tr>
         <tr>
+            <th><?= __('Parent Id') ?></th>
+            <td><?= $this->Number->format($comment->parent_id) ?></td>
+        </tr>
+        <tr>
             <th><?= __('Created') ?></th>
             <td><?= h($comment->created) ?></td>
         </tr>
         <tr>
             <th><?= __('Modified') ?></th>
             <td><?= h($comment->modified) ?></td>
+        </tr>
+        <tr>
+            <th><?= __('Is Private') ?></th>
+            <td><?= $comment->is_private ? __('Yes') : __('No'); ?></td>
+        </tr>
+        <tr>
+            <th><?= __('Is Latest') ?></th>
+            <td><?= $comment->is_latest ? __('Yes') : __('No'); ?></td>
         </tr>
     </table>
     <div class="row">
